@@ -15,7 +15,7 @@ subjects = [
 for student in students: # применение оценок ко всем студентам
     student["grades"] = subjects.copy()
 
-def view_all_students():
+def view_all_students(): # Ігор Аксьонов - Перегляд всіх студентів
     for student in students:
         print(f"ID: {student['id']}")
         print(f"Ім'я: {student['name']}")
@@ -32,8 +32,33 @@ def view_all_students():
                 print(f"  {subject}: {grade_display}")
         print("--" * 20)
 
-def add_student():
-    print("Додавання студентів до словника")
+def add_student(): # Ігор Аксьонов - Додавання студентів до списку
+    name = input("Введіть ім'я та прізвище студента: ")
+    group = input("Введіть групу студента: ")
+    course = input("Введіть курс студента (число): ")
+    
+    try:
+        course = int(course)
+    except ValueError:
+        print("Курс повинен бути числом. Спробуйте ще раз.")
+        return
+    
+    if students:
+        new_id = max(student['id'] for student in students) + 1
+
+    grades_template = {subject: None for subject in subjects} # шаблон оценок
+    
+    new_student = {
+        "id": new_id,
+        "name": name,
+        "group": group,
+        "course": course,
+        "grades": grades_template
+    }
+    
+    students.append(new_student)
+    print(f"Студент {name} успішно доданий з ID {new_id}.")
+
 
 def remove_student():
     print("Видалення студентів зі словника")
