@@ -254,8 +254,8 @@ def search_student_by_surname(): # Іващенко Нікіта - Пошук с
                 print(f"ID: {student['id']}")
                 print(f"Група: {student['group']}")
                 print(f"Курс: {student['course']}")
-                grade_string = ", ".join(f"{subject} - {score}" for subject,score in student["grades"].items())
-                print(f"Оцінки по предметам: {grade_string}")
+                grade_string = "".join(f"  {subject} - {score}\n" for subject,score in student["grades"].items())
+                print(f"Оцінки по предметам:\n{grade_string}")
                 print("- "*30)    
                 return
     print(f"Студента з прізвищем {search_query.capitalize()} не знайдено.")
