@@ -60,11 +60,135 @@ def add_student(): # Ігор Аксьонов - Додавання студен
     print(f"Студент {name} успішно доданий з ID {new_id}.")
 
 
-def remove_student():
-    print("Видалення студентів зі словника")
+def remove_student():# Денис Лихацький - Видалення студентів зі списку
 
-def edit_student():
-    print("Редагування інформації про студента")
+    try:
+        student_id = int(input("Введіть ID студента, якого потрібно видалити: "))
+    except ValueError:
+        print("Помилка: ID має бути числом.")
+        return
+
+    student_to_remove = None
+    for student in students:
+        if student['id'] == student_id:
+            student_to_remove = student
+            break
+
+    if student_to_remove:
+        students.remove(student_to_remove)
+        print(f"Студент з ID {student_id} (Ім'я: {student_to_remove['name']}) був успішно видалений.")
+    else:
+        print(f"Помилка: Студента з ID {student_id} не знайдено.")
+
+
+def edit_student():# Денис Лихацький - Редагування інформації про студента
+    
+    try:
+        student_id = int(input("Введіть ID студента для редагування: "))
+    except ValueError:
+        print("Помилка: ID має бути цілим числом.")
+        return
+
+    student_to_edit = None
+    for s in students:
+        if s['id'] == student_id:
+            student_to_edit = s
+            break
+    
+    if not student_to_edit:
+        print(f"Помилка: Студента з ID {student_id} не знайдено.")
+        return
+
+    while True:
+        print(f"\nРедагування студента: {student_to_edit['name']} (ID: {student_to_edit['id']})")
+        print(f"1. ПІБ: {student_to_edit['name']}")
+        print(f"2. Група: {student_to_edit['group']}")
+        print(f"3. Курс: {student_to_edit['course']}")
+        print("4. Редагувати оцінки")
+        print("0. Повернутися до головного меню")
+        
+        choice = input("Оберіть поле для редагування: ")
+
+        if choice == '1':
+            new_name = input(f"Введіть нове ПІБ (поточне: {student_to_edit['name']}): ")
+            if new_name: 
+                student_to_edit['name'] = new_name
+                print("ПІБ оновлено.")
+            else:
+                print("ПІБ не змінено.")
+        
+        elif choice == '2':
+            new_group = input(f"Введіть нову групу (поточна: {student_to_edit['group']}): ")
+            if new_group:
+                student_to_edit['group'] = new_group
+                print("Групу оновлено.")
+            else:
+                print("Групу не змінено.")
+
+        elif choice == '3':
+            try:
+                new_course_input = input(f"Введіть новий курс (поточний: {student_to_edit['course']}): ")
+                if new_course_input:
+                    new_course = int(new_course_input)
+                    student_to_edit['course'] = new_course
+                    print("Курс оновлено.")
+                else:
+                    print("Курс не змінено.")
+            except ValueError:
+                print("Помилка: Курс має бути числом.")
+
+        elif choice == '4':
+            
+            if isinstance(student_to_edit['grades'], list):
+                print("Ініціалізація системи оцінок (конвертація)...")
+                student_to_edit['grades'] = {subject: None for subject in subjects}
+
+            print("\nРедагування оцінок")
+            subject_list = list(student_to_edit['grades'].keys())
+            
+            if not subject_list:
+                print("Список предметів порожній.")
+                continue 
+
+            for i, subject in enumerate(subject_list):
+                grade = student_to_edit['grades'][subject]
+                grade_display = grade if grade is not None else "оцінка відсутня"
+                print(f"  {i+1}. {subject}: {grade_display}")
+
+            try:
+                subject_choice = int(input("\nВведіть номер предмету (або 0 для скасування): "))
+                
+                if subject_choice == 0:
+                    continue 
+                
+                subject_name = subject_list[subject_choice - 1] 
+
+            except (ValueError, IndexError):
+                print("Помилка: Невірний номер предмету.")
+                continue 
+            
+            new_grade_input = input(f"Введіть нову оцінку для '{subject_name}' (пусто = видалити): ")
+
+            if not new_grade_input:
+                student_to_edit['grades'][subject_name] = None
+                print(f"Оцінку видалено.")
+            else:
+                try:
+                    new_grade = int(new_grade_input)
+                    if 1 <= new_grade <= 100:
+                        student_to_edit['grades'][subject_name] = new_grade
+                        print(f"Оцінку оновлено на {new_grade}.")
+                    else:
+                        print("Помилка: Оцінка має бути від 1 до 100.")
+                except ValueError:
+                    print("Помилка: Оцінка має бути числом.")
+
+        elif choice == '0':
+            print(f"Завершено редагування студента {student_to_edit['name']}.")
+            break
+
+        else:
+            print("Невірний вибір. Спробуйте ще раз.")
 
 def show_students_by_group():
     print("Відображення студентів конкретної групи")
