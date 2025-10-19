@@ -244,11 +244,33 @@ def show_students_by_group():
 def show_students_by_course():
     print("Відображення студентів конкретного курсу")
 
-def search_student_by_surname():
-    print("Пошук студента по прізвищу та виведення інформації")
+def search_student_by_surname(): # Іващенко Нікіта - Пошук студентів за прізвищем
+    search_query = input("Введіть прізвище студента якого ви хочете знайти. -> ").lower().strip() 
+    for student in students:
+        surname = student["name"].split(" ")[1].lower()  
+        if search_query == surname:
+                print("- "*30)    
+                print(f"Студента з прізвищем {search_query.capitalize()} успішно знайдено.")
+                print(f"ID: {student['id']}")
+                print(f"Група: {student['group']}")
+                print(f"Курс: {student['course']}")
+                grade_string = ", ".join(f"{subject} - {score}" for subject,score in student["grades"].items())
+                print(f"Оцінки по предметам: {grade_string}")
+                print("- "*30)    
+                return
+    print(f"Студента з прізвищем {search_query.capitalize()} не знайдено.")
+    
+    
 
-def calculate_average_grade():
-    print("Підрахунок середнього балу студентів")
+def calculate_average_grade(): #  Іващенко Нікіта - Підрахунок середнього балу студентів
+    for student in students:
+        grades = list(student["grades"].values())
+        average = sum(grades)/len(grades)
+        print(f"Студент {student["name"]}")
+        print(f"Середній балл - {average:.1f}")
+        print("- "*30)        
+        
+        
 
 def subject_statistics():
     print("Статистика студентів по предмету")
