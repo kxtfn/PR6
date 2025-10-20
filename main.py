@@ -320,6 +320,108 @@ def menu():
             break
         else:
             print("Невірний вибір. Спробуйте ще раз.")
+def subject_statistics():  # Денисенко Сергій - Статистика студентів по предмету
+    print("\nОберіть предмет для статистики:")
+    for i, subj in enumerate(subjects, start=1):
+        print(f"{i}. {subj}")
+
+    try:
+        idx = int(input("Введіть номер предмета: "))
+        if not (1 <= idx <= len(subjects)):
+            print("Помилка: невірний номер предмета.")
+            return
+    except ValueError:
+        print("Помилка: введіть число.")
+        return
+
+    subject_name = subjects[idx - 1]
+
+    graded = []
+    not_graded = []
+
+    for s in students:
+        g = s.get("grades")
+
+        grade_val = g.get(subject_name) if isinstance(g, dict) else None
+        if isinstance(grade_val, int):
+            graded.append((s["name"], grade_val))
+        else:
+            not_graded.append(s["name"])
+
+    total = len(students)
+    n_graded = len(graded)
+    n_missing = len(not_graded)
+
+    print("\n" + "-" * 48)
+    print(f"Статистика по предмету: {subject_name}")
+    print(f"Всього студентів: {total}")
+    print(f"З оцінкою: {n_graded}")
+    print(f"Без оцінки: {n_missing}")
+
+    if n_graded == 0:
+        print("Поки що немає жодної оцінки за цим предметом.")
+        if not_graded:
+            print("\nСтуденти без оцінки:")
+            for name in not_graded:
+                print(f"  - {name}")
+        print("-" * 48)
+        return
+
+    grades_only = [g for _, g in graded]
+    avg = sum(grades_only) / n_graded
+    name_min, min_g = min(graded, key=lambda x: x[1])
+    name_max, max_g = max(graded, key=lambda x: x[1])
+
+    print(f"Середній бал: {avg:.2f}")
+    print(f"Мінімальна оцінка: {min_g} — {name_min}")
+    print(f"Максимальна оцінка: {max_g} — {name_max}")
+
+    print("\nРейтинг студентів за цим предметом:")
+    for i, (name, g) in enumerate(sorted(graded, key=lambda x: x[1], reverse=True), start=1):
+        print(f"{i:>2}. {name}: {g}")
+
+    if not_graded:
+        print("\nСтуденти без оцінки:")
+        for name in not_graded:
+            print(f"  - {name}")
+    print("-" * 48)
+
+
+def sort_students_by_average():  # Денисенко Сергій - Сортування студентів по середньому балу
+    def compute_avg(student):
+        g = student.get("grades")
+
+        if not isinstance(g, dict):
+            return None
+
+        nums = [val for val in g.values() if isinstance(val, int)]
+        if not nums:
+            return None
+        return sum(nums) / len(nums)
+
+    table = []
+    for s in students:
+        avg = compute_avg(s)
+        table.append({
+            "id": s["id"],
+            "name": s["name"],
+            "group": s["group"],
+            "course": s["course"],
+            "avg": avg
+        })
+
+    table_sorted = sorted(
+        table,
+        key=lambda x: ((x["avg"] is None), -(x["avg"] or 0), x["name"])
+    )
+
+    print("\n" + "-" * 48)
+    print("Рейтинг студентів за середнім балом:")
+    for i, row in enumerate(table_sorted, start=1):
+        avg_str = f"{row['avg']:.2f}" if row["avg"] is not None else "немає оцінок"
+        print(f"{i:>2}. ID:{row['id']} | {row['name']} | Група: {row['group']} | Курс: {row['course']} | Середній: {avg_str}")
+    print("-" * 48)
+
 
 
 if __name__ == "__main__":
