@@ -238,11 +238,61 @@ def edit_student():# Денис Лихацький - Редагування ін
         else:
             print("Невірний вибір. Спробуйте ще раз.")
 
-def show_students_by_group():
+def show_students_by_group(): # Гордієнко Анна - Відображення студентів конкретної групи
     print("Відображення студентів конкретної групи")
+    group = input("Введіть назву групи: ").strip()
 
-def show_students_by_course():
+    if not group:
+        print("Помилка: назву групи не введено.")
+        return
+
+    matched = [s for s in students if s.get("group", "").lower() == group.lower()]
+
+    if not matched:
+        print(f"Студентів групи '{group}' не знайдено.")
+        return
+
+    print("\n" + "-" * 48)
+    print(f"Студенти групи: {group}")
+    for s in matched:
+        print(f"\nID: {s['id']}")
+        print(f"Ім'я: {s['name']}")
+        print(f"Курс: {s['course']}")
+        print("Оцінки:")
+        g = s.get("grades")
+        if isinstance(g, dict):
+            for subj, grade in g.items():
+                print(f"  {subj}: {grade}")
+    print("-" * 48)
+
+def show_students_by_course(): # Гордієнко Анна - Відображення студентів конкретного курсу
     print("Відображення студентів конкретного курсу")
+    course_input = input("Введіть номер курсу: ").strip()
+
+    try:
+        course_num = int(course_input)
+    except ValueError:
+        print("Помилка: номер курсу введено неправильно.")
+        return
+
+    matched = [s for s in students if s.get("course") == course_num]
+
+    if not matched:
+        print(f"Студентів {course_num} курсу не знайдено.")
+        return
+
+    print("\n" + "-" * 48)
+    print(f"Студенти {course_num} курсу")
+    for s in matched:
+        print(f"\nID: {s['id']}")
+        print(f"Ім'я: {s['name']}")
+        print(f"Група: {s['group']}")
+        print("Оцінки:")
+        g = s.get("grades")
+        if isinstance(g, dict):
+            for subj, grade in g.items():
+                print(f"  {subj}: {grade}")
+    print("-" * 48)
 
 def search_student_by_surname(): # Іващенко Нікіта - Пошук студентів за прізвищем
     search_query = input("Введіть прізвище студента якого ви хочете знайти. -> ").lower().strip() 
